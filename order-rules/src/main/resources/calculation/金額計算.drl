@@ -15,7 +15,7 @@ no-loop true
         $detail.set値引前金額($単価 * $受注数);
         $detail.set送料区分($送料区分 * $受注数);
         $detail.set商品名($商品名);
-        System.out.println("明細行： " + $detail.toString());
+//        System.out.println("金額計算.drl 明細行： " + $detail.toString());
         update($detail);
 end
 
@@ -39,6 +39,6 @@ no-loop true
     then
         $header.set値引前金額($値引前金額合計);
         $header.set送料区分合計($送料区分合計);
-        System.out.println("ヘッダー行： " + $header.toString());
+ //       System.out.println("金額計算.drl ヘッダー行： " + $header.toString());
         update($header);
 end

@@ -14,3 +14,15 @@ function long func_明細値引後金額計算(注文明細 detail, long 値引�
 	
 	return result.subtract(discount).longValue();
 }
+
+// 注文ヘッダ割引適用
+function long func_ヘッダ値引後金額計算(注文ヘッダ header, long 値引率) {
+
+	BigDecimal result = new BigDecimal( header.get明細合計金額());
+
+	BigDecimal discountRate = new BigDecimal(値引率);
+	
+	BigDecimal discount = result.multiply(discountRate).divide(new BigDecimal(100)).setScale(0, RoundingMode.DOWN);
+	
+	return result.subtract(discount).longValue();
+}

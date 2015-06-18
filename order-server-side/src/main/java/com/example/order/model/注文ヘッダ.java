@@ -17,6 +17,8 @@ public class 注文ヘッダ implements Serializable {
 	// OUT
 	private long 値引前金額;
 	
+	private long 明細合計金額;
+	
 	private long 値引後金額;
 
 	private long 送料;
@@ -59,6 +61,14 @@ public class 注文ヘッダ implements Serializable {
 		this.値引前金額 = 値引前金額;
 	}
 
+	public long get明細合計金額() {
+		return 明細合計金額;
+	}
+
+	public void set明細合計金額(long 明細合計金額) {
+		this.明細合計金額 = 明細合計金額;
+	}
+	
 	public long get値引後金額() {
 		return 値引後金額;
 	}
@@ -102,8 +112,9 @@ public class 注文ヘッダ implements Serializable {
 	@Override
 	public String toString() {
 		return "注文ヘッダ [注文番号=" + 注文番号 + ", 会員番号=" + 会員番号 + ", 注文日=" + 注文日
-				+ ", 値引前金額=" + 値引前金額 + ", 値引後金額=" + 値引後金額 + ", 送料=" + 送料
-				+ ", 合計金額=" + 合計金額 + ", 送料区分合計=" + 送料区分合計 + ", 適用割引一覧="
-				+ 適用割引一覧 + "]";
+				+ ", 値引前金額=" + 値引前金額 + ", 明細合計金額=" + 明細合計金額 + ", 値引後金額="
+				+ 値引後金額 + ", 送料=" + 送料 + ", 合計金額=" + 合計金額 + ", 送料区分合計="
+				+ 送料区分合計 + ", 適用割引一覧=" + 適用割引一覧 + "]";
 	}
+
 }

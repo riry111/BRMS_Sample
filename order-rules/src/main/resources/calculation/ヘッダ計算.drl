@@ -12,24 +12,34 @@ no-loop true
 		update($detail);
 end
 
-
 rule "ヘッダ値引後金額設定"
 ruleflow-group "ヘッダ割引"
 salience 100
 no-loop true
 
     when
-        $header : 注文ヘッダ(値引後金額 == "" , $注文番号 : 注文番号)
+        $header : 注文ヘッダ(明細合計金額 == "" , $注文番号 : 注文番号)
         $detail : 注文明細(注文番号 == $注文番号, $適用割引一覧 : 適用割引一覧)
        
          // 注文番号単位の値引後金額合計をセット
-		Number($値引後金額合計 : longValue) from accumulate (注文明細(
+		Number($明細合計金額 : longValue) from accumulate (注文明細(
 											注文番号 == $注文番号, 
 											$値引後金額 : 値引後金額) , sum((long)$値引後金額))
     then
-        $header.set値引後金額($値引後金額合計);
+        $header.set明細合計金額($明細合計金額);
         $header.get適用割引一覧().addAll($適用割引一覧);
-        $header.set合計金額($header.get送料() + $header.get値引後金額());
-        System.out.println("ヘッダー行： " + $header.toString());
+ //       System.out.println("ヘッダ計算.drl ヘッダー行： " + $header.toString());
         update($header);
+end
+
+rule "合計金額算出"
+ruleflow-group "ヘッダ割引"
+salience -100
+no-loop true
+
+	when
+		$header : 注文ヘッダ(合計金額 == "")
+	then
+		$header.set合計金額($header.get送料() + ( $header.get値引後金額() == 0 ? $header.get明細合計金額() : $header.get値引後金額()));
+//        System.out.println("ヘッダ計算.drl ヘッダー行： " + $header.toString());
 end
