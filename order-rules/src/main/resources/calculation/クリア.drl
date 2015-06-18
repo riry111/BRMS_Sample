@@ -1,0 +1,23 @@
+package com.example.order
+
+rule "注文ヘッダ削除"
+ruleflow-group "クリア"
+
+    when
+        //conditions
+        $header : 注文ヘッダ()
+    then
+        //actions
+		retract($header);
+end
+
+rule "注文明細削除"
+ruleflow-group "クリア"
+    //include attributes such as "salience" here...
+    when
+        //conditions
+        $detail : 注文明細()
+    then
+        //actions
+        retract($detail);
+end

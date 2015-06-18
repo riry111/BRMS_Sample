@@ -1,0 +1,37 @@
+package com.example.order
+
+//list any import classes here.
+
+//declare any global variables here
+
+rule "EJBファクトインサート"
+ruleflow-group "初期処理"
+
+    when
+        $ioFact : EJBIOFact()
+    then
+    	// 注文ヘッダをksessionにインサート
+    	注文ヘッダ header = $ioFact.getHeader();
+    	insert(header);
+
+		List<注文明細> detailsList = $ioFact.getDetailsList();
+		// 注文明細をksessionにインサート
+		for (注文明細 bean : detailsList) {
+			// 初期値セット
+			insert(bean);
+		}
+		
+end
+
+rule "BRMSファクトインサート"
+ruleflow-group "初期処理"
+
+    when
+        $ioFact : BRMSIOFact()
+    then
+		List<商品マスタ> shouhinMstList = $ioFact.getShouhinMsList();
+		// 商品マスタをksessionにインサート
+		for (商品マスタ bean : shouhinMstList) {
+			insert(bean);
+		}
+end

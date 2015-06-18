@@ -1,0 +1,60 @@
+//created on: 2015/06/05
+package com.sample.test
+
+//list any import classes here.
+import java.util.TreeMap;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+
+import com.example.order.model.EJBIOFact;
+
+import com.sample.model.注文ヘッダテストケースリスト;
+import com.sample.model.注文明細テストケースリスト;
+import com.sample.model.注文ヘッダテストケース;
+import com.sample.model.注文明細テストケース;
+
+import com.sample.注文明細テストケースComparator;
+
+rule "init"
+ruleflow-group "init"
+
+    when
+        //conditions
+    then
+        //actions
+		insert(new 注文ヘッダテストケースリスト());
+		insert(new 注文明細テストケースリスト());
+end
+
+rule "createEJBIOFact"
+ruleflow-group "createfact"
+
+    //include attributes such as "salience" here...
+    when
+        //conditions
+        $inout : String()
+        $map : TreeMap()
+        $headercases : 注文ヘッダテストケースリスト()
+        $detailcases : 注文明細テストケースリスト()
+        // INPUTデータのみ
+        $header : 注文ヘッダテストケース($caseNo : caseNo, $type : type == $inout, $fact : fact) from $headercases
+        $detail : List(size > 0) from collect(注文明細テストケース(caseNo == $caseNo, type == $type) from $detailcases)
+    then
+        //actions
+        // 行番号で昇順ソート
+        Collections.sort($detail, new 注文明細テストケースComparator());
+
+        ArrayList $detailslist = new ArrayList();
+        
+        for(int i = 0; i < $detail.size(); i++) {
+        	// 注文明細ファクトをセット
+        	$detailslist.add(((注文明細テストケース)$detail.get(i)).getFact());
+        }
+        
+        EJBIOFact $iofact = new EJBIOFact();
+        $iofact.setHeader($header.getFact());
+        $iofact.setDetailsList($detailslist);
+        $map.put($caseNo, $iofact);
+
+end

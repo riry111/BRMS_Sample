@@ -1,0 +1,22 @@
+//created on: 2015/06/02
+package com.sample.test
+
+//list any import classes here.
+import com.sample.model.TestFact
+import com.sample.model.Errors
+
+/*
+ * ルール実行結果を格納したTestFactと期待値を格納したTestFactとを比較し、不一致があればエラーリストにログを格納
+ */
+rule "unMatch"
+
+    when
+        //conditions
+        $result : TestFact(type == "result", $factName : factName, $caseId : caseId, $lineNo : lineNo, $key : key, $value : value)
+        $expect : TestFact(type != "result", factName == $factName, caseId == $caseId, lineNo == $lineNo, key == $key, $eValue : value != $value)
+        $err : Errors()
+    then
+        //actions
+		$err.addError("ケースNo[" + $caseId + "]の[" + $factName + "_" + $lineNo + "]の項目名[" + $key + "]の値は[" + $value + "]で、期待値[" + $eValue + "]と不一致です。");
+end
+

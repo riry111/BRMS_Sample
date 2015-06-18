@@ -1,0 +1,16 @@
+//created on: 2015/06/16
+package com.example.order
+
+
+// 注文明細割引適用
+function long func_明細値引後金額計算(注文明細 detail, long 値引率) {
+
+//	BigDecimal result = new BigDecimal(detail.get値引前金額());
+	BigDecimal result = new BigDecimal( detail.get値引後金額() == 0 ? detail.get値引前金額() : detail.get値引後金額());
+
+	BigDecimal discountRate = new BigDecimal(値引率);
+	
+	BigDecimal discount = result.multiply(discountRate).divide(new BigDecimal(100)).setScale(0, RoundingMode.DOWN);
+	
+	return result.subtract(discount).longValue();
+}

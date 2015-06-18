@@ -1,0 +1,44 @@
+//created on: 2015/06/16
+package com.example.order
+
+rule "明細金額計算"
+ruleflow-group "金額集計"
+salience 100
+no-loop true
+
+    when
+        $header : 注文ヘッダ($注文番号 : 注文番号)
+        $detail : 注文明細(値引前金額 == "" , 注文番号 == $注文番号, $商品番号 : 商品番号, $受注数 : 受注数)
+		$shouhin : 商品マスタ(商品番号 == $商品番号, $商品名 : 商品名, $単価 : 単価, $送料区分 : 送料区分)
+       
+    then
+        $detail.set値引前金額($単価 * $受注数);
+        $detail.set送料区分($送料区分 * $受注数);
+        $detail.set商品名($商品名);
+        System.out.println("明細行： " + $detail.toString());
+        update($detail);
+end
+
+rule "ヘッダ計算"
+ruleflow-group "金額集計"
+salience 10
+no-loop true
+
+    when
+        $header : 注文ヘッダ(値引前金額 == "" , $注文番号 : 注文番号)
+        $detail : 注文明細(注文番号 == $注文番号)
+       
+         // 注文番号単位の値引前金額合計をセット
+		Number($値引前金額合計 : longValue) from accumulate (注文明細(
+											注文番号 == $注文番号, 
+											$値引前金額 : 値引前金額) , sum((long)$値引前金額))
+	    // 注文番号単位の送料区分合計をセット
+		Number($送料区分合計 : longValue) from accumulate (注文明細(
+											注文番号 == $注文番号, 
+											$送料区分 : 送料区分) , sum((long)$送料区分))
+    then
+        $header.set値引前金額($値引前金額合計);
+        $header.set送料区分合計($送料区分合計);
+        System.out.println("ヘッダー行： " + $header.toString());
+        update($header);
+end
