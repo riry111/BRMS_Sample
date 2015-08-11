@@ -8,7 +8,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <brms-version>6.2.0.Final-redhat-4</brms-version>
+        <brms-version>6.2.0.Final-redhat-9</brms-version>
 	</properties>
 
 	<packaging>kjar</packaging>

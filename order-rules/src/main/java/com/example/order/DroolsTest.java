@@ -117,7 +117,7 @@ public class DroolsTest {
     }
 
 	@SuppressWarnings("unchecked")
-	private static BRMSIOFact createFact() throws IOException {
+	public static BRMSIOFact createFact() throws IOException {
 
 		BRMSIOFact iofact = new BRMSIOFact();
     	
